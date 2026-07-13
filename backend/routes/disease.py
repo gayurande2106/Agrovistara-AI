@@ -1,32 +1,30 @@
 from fastapi import APIRouter, UploadFile, File
-from transformers import pipeline
 from PIL import Image
+import requests
+import os
+import io
 
 router = APIRouter()
 
-print("Loading Plant Disease AI Model...")
+HF_TOKEN = os.getenv("HF_TOKEN")
 
-classifier = pipeline(
-    "image-classification",
-    model="linkanjarad/mobilenet_v2_1.0_224-plant-disease-identification"
-)
+API_URL = "https://api-inference.huggingface.co/models/linkanjarad/mobilenet_v2_1.0_224-plant-disease-identification"
 
-print("Model Loaded Successfully!")
+headers = {
+    "Authorization": f"Bearer {HF_TOKEN}"
+}
 
-# Disease Information
 disease_info = {
     "Tomato___Early_blight": {
         "treatment": "Spray Copper Oxychloride or Mancozeb.",
         "prevention": "Avoid overhead watering and remove infected leaves.",
         "fertilizer": "NPK 19:19:19"
     },
-
     "Tomato___Late_blight": {
         "treatment": "Use Metalaxyl fungicide.",
         "prevention": "Improve air circulation.",
         "fertilizer": "NPK 20:20:20"
     },
-
     "Potato___Early_blight": {
         "treatment": "Spray Mancozeb.",
         "prevention": "Use certified seeds.",
@@ -34,15 +32,25 @@ disease_info = {
     }
 }
 
-
 @router.post("/")
 async def detect_disease(file: UploadFile = File(...)):
-
     try:
-
         image = Image.open(file.file).convert("RGB")
 
-        prediction = classifier(image)
+        img_bytes = io.BytesIO()
+        image.save(img_bytes, format="JPEG")
+        img_bytes = img_bytes.getvalue()
+
+        response = requests.post(
+            API_URL,
+            headers=headers,
+            data=img_bytes
+        )
+
+        prediction = response.json()
+
+        if isinstance(prediction, dict) and prediction.get("error"):
+            return prediction
 
         label = prediction[0]["label"]
         confidence = round(prediction[0]["score"] * 100, 2)
@@ -50,9 +58,9 @@ async def detect_disease(file: UploadFile = File(...)):
         info = disease_info.get(
             label,
             {
-                "treatment": "Consult agriculture expert.",
-                "prevention": "Monitor crop regularly.",
-                "fertilizer": "Balanced NPK fertilizer."
+                "treatment": "Consult Agriculture Expert",
+                "prevention": "Monitor crop regularly",
+                "fertilizer": "Balanced NPK"
             }
         )
 
@@ -65,7 +73,4 @@ async def detect_disease(file: UploadFile = File(...)):
         }
 
     except Exception as e:
-
-        return {
-            "error": str(e)
-        }
+        return {"error": str(e)}
