@@ -2,20 +2,18 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import Routers
-from backend.routes.weather import router as weather_router
-from backend.routes.auth import router as auth_router
-from backend.routes.upload import router as upload_router
-from backend.routes.disease import router as disease_router
-from backend.routes.prices import router as prices_router
-from backend.routes.fertilizer import router as fertilizer_router
-from backend.routes.chatbot import router as chatbot_router
-from backend.models.user import User
-from backend.routes.user_auth import router as user_auth_router
+from routes.weather import router as weather_router
+from routes.auth import router as auth_router
+from routes.upload import router as upload_router
+from routes.disease import router as disease_router
+from routes.prices import router as prices_router
+from routes.fertilizer import router as fertilizer_router
+from routes.chatbot import router as chatbot_router
+from routes.user_auth import router as user_auth_router
 
-
-# Database
-from backend.database.database import engine, Base
-from backend.models.farmer import Farmer
+from database.database import engine, Base
+from models.user import User
+from models.farmer import Farmer
 
 # Create Database Tables
 Base.metadata.create_all(bind=engine)
