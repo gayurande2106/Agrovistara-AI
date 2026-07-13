@@ -14,7 +14,7 @@ from utils.security import (
 from schemas.user import UserCreate, UserLogin
 
 router = APIRouter()
-
+    
 
 @router.post("/signup")
 def signup(user: UserCreate, db: Session = Depends(get_db)):
