@@ -10,6 +10,7 @@ import Fertilizer from "./pages/Fertilizer";
 import Prices from "./pages/Prices";
 import Chatbot from "./pages/Chatbot";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
 
       {/* Public Route */}
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+
 
       {/* Protected Routes */}
       <Route
@@ -31,6 +34,7 @@ function App() {
               <Route path="/fertilizer" element={<Fertilizer />} />
               <Route path="/prices" element={<Prices />} />
               <Route path="/chatbot" element={<Chatbot />} />
+              
             </Routes>
           </Layout>
         }

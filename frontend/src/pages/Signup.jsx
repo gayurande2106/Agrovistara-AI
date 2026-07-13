@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
-function Login() {
+function Signup() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -17,26 +18,33 @@ function Login() {
     });
   };
 
-  const login = async () => {
+  const signup = async () => {
     try {
-      const res = await API.post("/user/login", form);
+      await API.post("/user/signup", form);
 
-      localStorage.setItem("token", res.data.access_token);
-      localStorage.setItem("name", res.data.name);
+      alert("Signup Successful!");
 
-      alert("Login Successful!");
-
-      navigate("/");
+      navigate("/login");
     } catch (err) {
-      alert(err.response?.data?.detail || "Invalid Login");
+      alert(err.response?.data?.detail || "Signup Failed");
     }
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "120px" }}>
-      <h1>🌾 Agrovistara Login</h1>
+    <div style={{ textAlign: "center", marginTop: "100px" }}>
+      <h1>🌾 Agrovistara Signup</h1>
 
       <br />
+
+      <input
+        type="text"
+        name="name"
+        placeholder="Full Name"
+        value={form.name}
+        onChange={handleChange}
+      />
+
+      <br /><br />
 
       <input
         type="email"
@@ -46,8 +54,7 @@ function Login() {
         onChange={handleChange}
       />
 
-      <br />
-      <br />
+      <br /><br />
 
       <input
         type="password"
@@ -57,21 +64,13 @@ function Login() {
         onChange={handleChange}
       />
 
-      <br />
-      <br />
+      <br /><br />
 
-      <button onClick={login}>Login</button>
-
-      <br />
-      <br />
-
-      <p>Don't have an account?</p>
-
-      <button onClick={() => navigate("/signup")}>
-        Create Account
+      <button onClick={signup}>
+        Sign Up
       </button>
     </div>
   );
 }
 
-export default Login;
+export default Signup;
