@@ -11,6 +11,7 @@ from routes.fertilizer import router as fertilizer_router
 from routes.chatbot import router as chatbot_router
 from routes.user_auth import router as user_auth_router
 
+# Database
 from database.database import engine, Base
 from models.user import User
 from models.farmer import Farmer
@@ -25,19 +26,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# CORS Middleware
 app.add_middleware(
-    CORSMiddleware,
-    app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "https://agrovistara-ai.vercel.app",
     ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -73,34 +69,35 @@ app.include_router(
     tags=["Upload"]
 )
 
-#Disease Detection Routes
+# Disease Detection Routes
 app.include_router(
     disease_router,
     prefix="/disease",
     tags=["Disease Detection"]
 )
 
-#Price Routes
+# Crop Prices Routes
 app.include_router(
     prices_router,
     prefix="/prices",
     tags=["Crop Prices"]
 )
 
-#Fertilizer Routes
+# Fertilizer Routes
 app.include_router(
     fertilizer_router,
     prefix="/fertilizer",
     tags=["Fertilizer"]
 )
 
-#Chatbot Router
+# Chatbot Routes
 app.include_router(
     chatbot_router,
     prefix="/chatbot",
     tags=["AI Chatbot"]
 )
 
+# User Authentication Routes
 app.include_router(
     user_auth_router,
     prefix="/user",
